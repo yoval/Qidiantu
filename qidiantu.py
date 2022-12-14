@@ -67,6 +67,6 @@ def run(year,month,checkTag):
 if __name__ == '__main__':
     year = 2022
     month = 1
-    checkTag = '首页'
-    for month in [5,6]:
+    checkTag = '玄幻'
+    for month in [1,2,3,4,5,6]:
         run(year,month,checkTag)
