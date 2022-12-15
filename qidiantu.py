@@ -55,18 +55,25 @@ def run(year,month,checkTag):
             bookList.append(book)
         else:
             print('《%s》,太监了~'%BookName)
-    #    break
-    print('检测有%s本书已完结最近有更新，即将加入书单！'%len(bookList))
-    p = Pinyin() 
-    pyName = p.get_pinyin(checkTag,'')
-    FileName = pyName +'_' + '%s-%s'%(year,month)
-    with open('%s.json'%FileName,'w',encoding='utf-8') as f:
-        json.dump(bookList,f,ensure_ascii=False,indent = 2)
-    print('已生成书单文件！')
+    return bookList
 
 if __name__ == '__main__':
+    p = Pinyin() 
+    allBookList = []
     year = 2022
-    month = 1
-    checkTag = '科幻'
-    for month in [1,2,3,4,5,6]:
-        run(year,month,checkTag)
+    checkTagList = ['仙侠','科幻','玄幻','都市','历史']
+    monthList = [1,2,3,4,5,6,7,8,9]
+    for checkTag in checkTagList:
+        for month in monthList:
+            bookList = run(year,month,checkTag)
+            allBookList = allBookList + bookList
+            print('检测有%s本书已完结最近有更新，即将加入书单！'%len(bookList))
+            pyName = p.get_pinyin(checkTag,'')
+            FileName = pyName +'_' + '%s-%s'%(year,month)
+            with open('%s.json'%FileName,'w',encoding='utf-8') as f:
+                json.dump(bookList,f,ensure_ascii=False,indent = 2)
+            print('已生成书单文件！')
+    fileName = time.strftime('%Y-%m-%d', time.localtime(time.time()))
+    with open('All_%s.json'%fileName,'w',encoding='utf-8') as f:
+        json.dump(allBookList,f,ensure_ascii=False,indent = 2)
+    print('已生成全部书单文件！')
