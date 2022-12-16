@@ -7,10 +7,19 @@ Created on Sat Dec  3 04:33:41 2022
 """
 from xpinyin import Pinyin
 from bs4 import BeautifulSoup
-import requests,calendar,time,datetime,json
+from yousuuPush import addFavs,loginYousuu,Check,add_Favs
+import requests,calendar,time,datetime,json,os
 
+#登录优书网，账号密码到yousuupush.py配置
+Conn = loginYousuu()
+#创建本地文件夹
+def mkdir(path):
+	folder = os.path.exists(path)
+	if not folder:
+		os.makedirs(path)
 
 def run(year,month,checkTag):
+    global Conn
     Nowday = time.strftime("%Y-%m-%d", time.localtime())
     yesterday = datetime.date.today() + datetime.timedelta(-1)
     Yesterday = '%s-%s-%s'%(yesterday.year,str(yesterday.month).rjust(2,'0'),str(yesterday.day).rjust(2,'0'))
@@ -51,25 +60,30 @@ def run(year,month,checkTag):
             introduction = '已完结\n' + introduction
         if Yesterday in RefreshDay or  Nowday in RefreshDay or '完结' in status:
             print('《%s》,近两日有更新或已完结！'%BookName)
+            youShuId = Check(BookName)
+            if youShuId==0:
+                addFavs(Conn,bookUrl)
+            else:
+                add_Favs(Conn,youShuId)
             book = {"author":Author,'intro':introduction,'name':BookName}
             bookList.append(book)
         else:
             print('《%s》,太监了~'%BookName)
     return bookList
-
 if __name__ == '__main__':
     p = Pinyin() 
     allBookList = []
     year = 2022
-    checkTagList = ['仙侠','科幻','玄幻','都市','历史']
+    checkTagList = ['奇幻','仙侠','都市','玄幻','首页','游戏','科幻','都市']
     monthList = [1,2,3,4,5,6,7,8,9]
     for checkTag in checkTagList:
+        pyName = p.get_pinyin(checkTag,'')
+        mkdir(pyName)
         for month in monthList:
             bookList = run(year,month,checkTag)
             allBookList = allBookList + bookList
             print('检测有%s本书已完结最近有更新，即将加入书单！'%len(bookList))
-            pyName = p.get_pinyin(checkTag,'')
-            FileName = pyName +'_' + '%s-%s'%(year,month)
+            FileName = pyName +'/' + '%s-%s'%(year,month)
             with open('%s.json'%FileName,'w',encoding='utf-8') as f:
                 json.dump(bookList,f,ensure_ascii=False,indent = 2)
             print('已生成书单文件！')
