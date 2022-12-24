@@ -96,8 +96,8 @@ if __name__ == '__main__':
     p = Pinyin() 
     allBookList = []
     year = 2022
-    checkTagList = ['仙侠']
-    monthList = [4]
+    checkTagList = ['都市']
+    monthList = [1,2,3,4 ]
     for checkTag in checkTagList:
         pyName = p.get_pinyin(checkTag,'')
         mkdir(pyName)
