@@ -35,7 +35,7 @@ def Check(bookName):
 def loginYousuu():
     loginUrl = 'https://api.yousuu.com/api/login'
     Conn = requests.session()
-    loginData = {'password': "****",'userName': "492119549@qq.com"}
+    loginData = {'password': "f13965241130",'userName': "492119549@qq.com"}
     loginResp = Conn.post(loginUrl,loginData)
     print(loginResp.json()['message'])
     return Conn
@@ -61,5 +61,5 @@ def add_Favs(Conn,yousuuId):
         
 if __name__=='__main__':
     Conn = loginYousuu()
-#    qidiantuUrl = 'https://www.qidiantu.com/info/1035741573'
-#    addFavs(Conn,qidiantuUrl)
+    qidiantuUrl = 'https://www.qidiantu.com/info/1035741573'
+    addFavs(Conn,qidiantuUrl)
